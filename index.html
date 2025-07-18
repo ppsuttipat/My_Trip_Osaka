@@ -248,6 +248,13 @@
           table_weather: "สภาพอากาศ",
           map_link: "🗺️ นำทาง Google Maps",
           coming_soon: "เร็วๆ นี้",
+          expense_title: "💰 ค่าใช้จ่ายโดยประมาณ (สำหรับ 1 ท่าน)",
+          cat_travel: "🚌 ค่าเดินทาง",
+          cat_admission: "🎟️ ค่าเข้าชม",
+          cat_food: "🍜 ค่าอาหาร",
+          total_label: "ยอดรวมประมาณ",
+          exclude_note: "(ไม่รวมค่าช้อปปิ้งและของว่าง)",
+          cat_service: "🛅 ค่าบริการ",
         },
         en: {
           lang_display: "English",
@@ -267,6 +274,13 @@
           table_weather: "Weather",
           map_link: "🗺️ Open in Google Maps",
           coming_soon: "Coming Soon",
+          expense_title: "💰 Estimated Expenses (Per Person)",
+          cat_travel: "🚌 Transport",
+          cat_admission: "🎟️ Admissions",
+          cat_food: "🍜 Food & Drinks",
+          total_label: "Estimated Total",
+          exclude_note: "(Excludes shopping & snacks)",
+          cat_service: "🛅 Services",
         },
         jp: {
           lang_display: "日本語",
@@ -286,6 +300,229 @@
           table_weather: "予想天気",
           map_link: "🗺️ Googleマップで開く",
           coming_soon: "近日公開",
+          expense_title: "💰 費用目安（1名様あたり）",
+          cat_travel: "🚌 交通費",
+          cat_admission: "🎟️ 入場料",
+          cat_food: "🍜 食事代",
+          total_label: "合計目安",
+          exclude_note: "（お土産・軽食代は除く）",
+          cat_service: "🛅 サービス料",
+        },
+      };
+
+      const dailyCosts = {
+        "day-8": {
+          jpy_total: 0,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 0,
+              th: "เดินทางโดยรถยนต์ส่วนตัว",
+              en: "Private car transfer",
+              jp: "自家用車での移動",
+            },
+          ],
+        },
+        "day-9": {
+          jpy_total: 6160,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 1400,
+              th: "รถไฟเข้าเมืองและในเมือง",
+              en: "Airport & city trains",
+              jp: "空港アクセスと市内電車",
+            },
+            {
+              category: "service",
+              cost: 260,
+              th: "ค่าฝากกระเป๋า (L+S)",
+              en: "Luggage Storage (L+S)",
+              jp: "荷物預かり（L+S）",
+            },
+            {
+              category: "admission",
+              cost: 0,
+              th: "สถานที่เที่ยวฟรี",
+              en: "Free attractions",
+              jp: "無料の観光スポット",
+            },
+            {
+              category: "food",
+              cost: 4500,
+              th: "อาหาร 3 มื้อ",
+              en: "3 meals",
+              jp: "食事3回",
+            },
+          ],
+        },
+        "day-10": {
+          jpy_total: 5620,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 620,
+              th: "รถไฟ JR ไป-กลับ USJ",
+              en: "JR train round trip to USJ",
+              jp: "USJへのJR往復",
+            },
+            {
+              category: "admission",
+              cost: 0,
+              th: "ตั๋ว USJ 1-Day Pass (ชำระล่วงหน้าแล้ว)",
+              en: "USJ 1-Day Pass (Pre-paid)",
+              jp: "USJ 1デイ・パス（支払い済み）",
+            },
+            {
+              category: "food",
+              cost: 5000,
+              th: "อาหารในสวนสนุก (3 มื้อ)",
+              en: "Food in theme park (3 meals)",
+              jp: "パーク内での食事（3回）",
+            },
+          ],
+        },
+        "day-11": {
+          jpy_total: 12510,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 1410,
+              th: "รถไฟ (โอซาก้า ↔ โกเบ) และ JR",
+              en: "Trains (Osaka ↔ Kobe) and JR",
+              jp: "電車（大阪 ↔ 神戸）とJR線",
+            },
+            {
+              category: "admission",
+              cost: 3100,
+              th: "Kobe Suma Seaworld",
+              en: "Kobe Suma Seaworld",
+              jp: "神戸須磨シーワールド",
+            },
+            {
+              category: "food",
+              cost: 8000,
+              th: "อาหาร 3 มื้อ (รวมเนื้อโกเบ)",
+              en: "3 meals (incl. Kobe Beef)",
+              jp: "食事3回（神戸牛を含む）",
+            },
+          ],
+        },
+        "day-12": {
+          jpy_total: 9980,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 4080,
+              th: "Shinkansen และรถไฟ/บัสหลายต่อ",
+              en: "Shinkansen & various trains/buses",
+              jp: "新幹線と複数の電車・バス",
+            },
+            {
+              category: "admission",
+              cost: 900,
+              th: "วัดคิโยมิสึ, วัดเท็นริวจิ",
+              en: "Kiyomizu & Tenryu-ji Temples",
+              jp: "清水寺・天龍寺",
+            },
+            {
+              category: "food",
+              cost: 5000,
+              th: "อาหาร 3 มื้อ",
+              en: "3 meals",
+              jp: "食事3回",
+            },
+          ],
+        },
+        "day-13": {
+          jpy_total: 6650,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 1550,
+              th: "รถไฟไป-กลับนารา และในโอซาก้า",
+              en: "Round trip to Nara & Osaka Metro",
+              jp: "奈良往復と大阪メトロ",
+            },
+            {
+              category: "admission",
+              cost: 600,
+              th: "วัดโทไดจิ (พระใหญ่)",
+              en: "Todai-ji Temple (Great Buddha)",
+              jp: "東大寺（大仏殿）",
+            },
+            {
+              category: "food",
+              cost: 4500,
+              th: "อาหาร 3 มื้อ (ระดับกลาง)",
+              en: "3 meals (mid-range)",
+              jp: "食事3回（中級）",
+            },
+          ],
+        },
+        "day-14": {
+          jpy_total: 14700,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 5000,
+              th: "Osaka Amazing Pass (2-Day)",
+              en: "Osaka Amazing Pass (2-Day)",
+              jp: "大阪周遊パス（2日券）",
+            },
+            {
+              category: "admission",
+              cost: 2700,
+              th: "Osaka Aquarium Kaiyukan (ไม่รวมในพาส)",
+              en: "Osaka Aquarium Kaiyukan (Not in pass)",
+              jp: "海遊館（パス対象外）",
+            },
+            {
+              category: "food",
+              cost: 7000,
+              th: "อาหาร 3 มื้อ (รวมข้าวหน้าปลาไหล)",
+              en: "3 meals (incl. Unagi rice)",
+              jp: "食事3回（うなぎを含む）",
+            },
+          ],
+        },
+        "day-15": {
+          jpy_total: 6000,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 0,
+              th: "ใช้ Osaka Amazing Pass (วันที่ 2)",
+              en: "Using Osaka Amazing Pass (Day 2)",
+              jp: "大阪周遊パス利用（2日目）",
+            },
+            {
+              category: "food",
+              cost: 6000,
+              th: "อาหาร 3 มื้อ (ระดับกลาง)",
+              en: "3 meals (mid-range)",
+              jp: "食事3回（中級）",
+            },
+          ],
+        },
+        "day-16": {
+          jpy_total: 3970,
+          breakdown: [
+            {
+              category: "travel",
+              cost: 970,
+              th: "รถไฟ Nankai ไปสนามบิน",
+              en: "Nankai train to airport",
+              jp: "南海電車で空港へ",
+            },
+            {
+              category: "food",
+              cost: 3000,
+              th: "อาหาร/ของว่างก่อนเดินทาง",
+              en: "Meal/snack before departure",
+              jp: "出発前の食事・軽食",
+            },
+          ],
         },
       };
 
@@ -3899,6 +4136,19 @@
         function generateOverviewPanel(lang) {
           const t = translations[lang];
           const tripData = tripDataStore[lang];
+
+          // --- ส่วนที่เพิ่มเข้ามา: คำนวณยอดรวมทั้งหมด ---
+          let totalTripCost = 0;
+          for (const dayKey in dailyCosts) {
+            totalTripCost += dailyCosts[dayKey].jpy_total;
+          }
+          const totalJpyFormatted = totalTripCost.toLocaleString();
+          const totalThbFormatted = (totalTripCost * 0.22).toLocaleString(
+            undefined,
+            { maximumFractionDigits: 0 }
+          );
+          // --- สิ้นสุดส่วนที่เพิ่ม ---
+
           const flightData = {
             departureFlight: "TG622 (BKK → KIX)",
             departureTime:
@@ -3914,24 +4164,132 @@
           const accommodationName = "Landmark Namba Ebisucho";
           const accommodationAddress =
             "2-chōme-11-17 Ebisunishi, Naniwa Ward, Osaka, 556-0003";
+
           const summaryRows = tripData.summary
             .map(
               (row) =>
                 `<tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-label="${t.table_date}">${row.date}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${t.table_city}">${row.city}</td><td class="px-6 py-4 text-sm text-gray-500" data-label="${t.table_highlights}">${row.highlights}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${t.table_weather}">${row.weather}</td></tr>`
             )
             .join("");
-          return `<div class="mb-8 text-center py-4"><img src="https://img5.pic.in.th/file/secure-sv1/Gemini_Generated_Image_ui1ek1ui1ek1ui1e.png" onerror="this.onerror=null; this.src='https://placehold.co/600x400/FDFBF6/8B4513?text=Osaka+Kyoto+Nara+Kobe';" alt="ภาพรวมเมืองโอซาก้า เกียวโต นารา โกเบ" class="mx-auto w-full max-w-3xl rounded-lg shadow-lg"></div><div class="mb-8"><h2 class="text-2xl font-bold mb-4 text-center text-[#A0522D]">${t.overview_title}</h2><div class="grid md:grid-cols-2 gap-6"><div class="info-card"><h3 class="text-xl font-semibold mb-2">${t.flight_info}</h3><p><strong>${t.departure}</strong> ${flightData.departureFlight}</p><p class="ml-4">${flightData.departureTime}</p><p><strong>${t.return}</strong> ${flightData.returnFlight}</p><p class="ml-4">${flightData.returnTime}</p></div><div class="info-card"><h3 class="text-xl font-semibold mb-2">${t.accommodation}</h3><p><a href="https://maps.app.goo.gl/3NP1QEPvkyPkjfkNA" target="_blank" class="text-[#8B4513] hover:underline"><strong>${accommodationName}</strong></a></p><p class="text-sm text-gray-600">${accommodationAddress}</p></div></div></div><div class="mb-8"><h2 class="text-2xl font-bold mb-4 text-center text-[#A0522D]">${t.summary_title}</h2><div class="info-card overflow-x-auto responsive-table"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t.table_date}</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t.table_city}</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t.table_highlights}</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t.table_weather}</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${summaryRows}</tbody></table></div></div>`;
-        }
 
+          // --- ส่วนที่แก้ไข: เพิ่มการ์ดสรุปค่าใช้จ่ายเข้าไป ---
+          return `
+        <div class="mb-8 text-center py-4">
+            <img src="https://img5.pic.in.th/file/secure-sv1/Gemini_Generated_Image_ui1ek1ui1ek1ui1e.png" onerror="this.onerror=null; this.src='https://placehold.co/600x400/FDFBF6/8B4513?text=Osaka+Kyoto+Nara+Kobe';" alt="ภาพรวมเมืองโอซาก้า เกียวโต นารา โกเบ" class="mx-auto w-full max-w-3xl rounded-lg shadow-lg">
+        </div>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-center text-[#A0522D]">${
+              t.overview_title
+            }</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="info-card">
+                    <h3 class="text-xl font-semibold mb-2">${t.flight_info}</h3>
+                    <p><strong>${
+                      lang === "th" ? "ขาไป:" : "Departure:"
+                    }</strong> ${flightData.departureFlight}</p>
+                    <p class="ml-4">${flightData.departureTime}</p>
+                    <p><strong>${
+                      lang === "th" ? "ขากลับ:" : "Return:"
+                    }</strong> ${flightData.returnFlight}</p>
+                    <p class="ml-4">${flightData.returnTime}</p>
+                </div>
+                <div class="info-card">
+                    <h3 class="text-xl font-semibold mb-2">${
+                      t.accommodation
+                    }</h3>
+                    <p><a href="https://maps.app.goo.gl/3NP1QEPvkyPkjfkNA" target="_blank" class="text-[#8B4513] hover:underline"><strong>${accommodationName}</strong></a></p>
+                    <p class="text-sm text-gray-600">${accommodationAddress}</p>
+                </div>
+                <div class="info-card md:col-span-2" style="border-left-color: #4CAF50;">
+                    <h3 class="text-xl font-semibold mb-2">${
+                      lang === "th"
+                        ? "💰 สรุปค่าใช้จ่ายตลอดทริป"
+                        : "💰 Total Trip Expenses"
+                    }</h3>
+                    <div class="flex items-baseline space-x-4">
+                        <p class="text-3xl font-bold text-gray-800">¥${totalJpyFormatted}</p>
+                        <p class="text-lg text-gray-600">(~ ฿${totalThbFormatted})</p>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">${
+                      lang === "th"
+                        ? "สำหรับ 1 ท่าน (ไม่รวมตั๋วเครื่องบินและที่พัก)"
+                        : "Per person (excluding flights & accommodation)"
+                    }</p>
+                </div>
+            </div>
+        </div>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-center text-[#A0522D]">${
+              t.summary_title
+            }</h2>
+            <div class="info-card overflow-x-auto responsive-table">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${
+                              t.table_date
+                            }</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${
+                              t.table_city
+                            }</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${
+                              t.table_highlights
+                            }</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${
+                              t.table_weather
+                            }</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">${summaryRows}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
+        }
         function generateDayPanel(dayId, lang) {
-          const tripData = tripDataStore[lang];
-          const dayData = tripData[dayId];
-          if (!dayData || !dayData.activities)
+          const tripData = tripDataStore[lang][dayId];
+          if (!tripData || !tripData.activities)
             return `<h2 class="text-2xl font-bold text-center text-gray-500 mt-12">${translations[lang].coming_soon}</h2>`;
-          const activitiesHtml = dayData.activities
-            .map(createActivityCard)
+
+          const activitiesHtml = tripData.activities
+            .map((activity) => createActivityCard(activity))
             .join("");
-          return `<h2 class="text-2xl font-bold mb-6 text-center text-[#A0522D]">${dayData.title}</h2><div class="space-y-4">${activitiesHtml}</div>`;
+
+          const costData = dailyCosts[dayId];
+          let costSectionHtml = "";
+          if (costData) {
+            const t = translations[lang];
+            const totalJpy = costData.jpy_total.toLocaleString();
+            const categoryIcons = { travel: "🚌", admission: "🎟️", food: "🍜" };
+
+            const breakdownList = costData.breakdown
+              .map((item) => {
+                if (item.cost === 0 && costData.breakdown.length > 1) return "";
+                const icon = categoryIcons[item.category] || "💰";
+                return `
+            <li class="flex justify-between border-b border-dashed border-gray-200 py-1">
+                <span>${icon} ${item[lang]}</span>
+                <strong class="font-mono">¥${item.cost.toLocaleString()}</strong>
+            </li>`;
+              })
+              .join("");
+
+            costSectionHtml = `
+            <div class="info-card mt-8">
+                <h3 class="text-xl font-semibold mb-4 text-[#A0522D]">${t.expense_title}</h3>
+                <ul class="text-sm space-y-2 text-gray-700">${breakdownList}</ul>
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-300">
+                    <span class="text-lg font-bold text-gray-800">${t.total_label}</span>
+                    <strong class="text-2xl font-bold text-[#8B4513]">¥${totalJpy}</strong>
+                </div>
+                <p class="text-xs text-gray-500 mt-2 text-right">${t.exclude_note}</p>
+            </div>`;
+          }
+
+          return `
+        <h2 class="text-2xl font-bold mb-6 text-center text-[#A0522D]">${tripData.title}</h2>
+        <div class="space-y-4">${activitiesHtml}</div>
+        ${costSectionHtml}`;
         }
 
         function renderContent(lang) {
