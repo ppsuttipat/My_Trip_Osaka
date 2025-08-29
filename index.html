@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,37 +12,105 @@
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="./assets/styles.css">
-  
 
-  <style>html[data-auth="pending"] body{visibility:hidden}</style>
-<script>document.documentElement.dataset.auth='pending'</script>
 
-<!-- UMD เพียงตัวเดียว -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+  <style>
+    html[data-auth="pending"] body {
+      visibility: hidden
+    }
+  </style>
+  <script>document.documentElement.dataset.auth = 'pending'</script>
 
-<!-- Guard (สั้นๆ) -->
-<script defer>
-(function () {
-  const SB_URL  = "https://lhfazmfaxruckfedwzlz.supabase.co";
-  const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoZmF6bWZheHJ1Y2tmZWR3emx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTgyODAsImV4cCI6MjA3MTk3NDI4MH0.T8lotVqI_nkB-glx3aSaeVAyJMF7Vout2SSeQGLzR78";
+  <!-- UMD เพียงตัวเดียว -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+
+  <!-- Guard (สั้นๆ) -->
+  <script defer>
+      (function () {
+        const SB_URL = "https://lhfazmfaxruckfedwzlz.supabase.co";
+        const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoZmF6bWZheHJ1Y2tmZWR3emx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTgyODAsImV4cCI6MjA3MTk3NDI4MH0.T8lotVqI_nkB-glx3aSaeVAyJMF7Vout2SSeQGLzR78";
+        const SESSION_TTL_MS = 15 * 60 * 1000; // 15 นาที
 
   function ready(fn){ if (window.supabase?.createClient) fn(); else setTimeout(()=>ready(fn), 20); }
 
-  ready(() => {
+  ready(async () => {
     const sb = window.supabase.createClient(SB_URL, SB_ANON);
     window.sb = sb;
 
-    sb.auth.getSession().then(({ data:{ session } }) => {
-      if (!session) location.replace('./login.html');
-      else document.documentElement.removeAttribute('data-auth');
-    });
+    // ----- TTL helpers -----
+    const ls = localStorage;
+    const now = () => Date.now();
+    const getNum = (k) => +(ls.getItem(k) || 0);
+    const setActive = () => ls.setItem('trip_last_active', String(now()));
+    const isExpired = () => {
+      const loginAt    = getNum('trip_login_at');
+      const lastActive = Math.max(loginAt, getNum('trip_last_active'));
+      return !!loginAt && (lastActive + SESSION_TTL_MS <= now());
+    };
 
-    // ถ้าถูก sign out ระหว่างอยู่ในหน้า ก็กลับไป login
-    sb.auth.onAuthStateChange((event, session) => {
-      if (!session || event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+    // กันรีเอ็นทรี่ (ไม่ให้สั่ง logout/redirect ซ้ำ ๆ)
+    let redirecting = false;
+    const redirectToLogin = () => {
+      if (redirecting) return;
+      redirecting = true;
+      ls.removeItem('trip_login_at');
+      ls.removeItem('trip_last_active');
+      location.replace('./login.html');
+    };
+
+    // ใช้เมื่อเราต้อง “บังคับหลุด” เท่านั้น
+    const forceLogout = async () => {
+      if (redirecting) return;
+      redirecting = true;
+      try { await sb.auth.signOut(); } catch {}
+      finally {
+        ls.removeItem('trip_login_at');
+        ls.removeItem('trip_last_active');
         location.replace('./login.html');
       }
+    };
+
+    // 1) หมดอายุ → หลุดก่อนโชว์หน้า
+    if (isExpired()) return forceLogout();
+
+    // 2) ต้องมี session
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) return redirectToLogin();
+
+    // 3) ตั้งค่าเริ่มถ้ายังไม่มี (เผื่อไม่ได้เซ็ตจาก login.js)
+    if (!getNum('trip_login_at')) {
+      const t = now();
+      ls.setItem('trip_login_at', String(t));
+      ls.setItem('trip_last_active', String(t));
+    }
+
+    // 4) โชว์หน้า
+    document.documentElement.removeAttribute('data-auth');
+
+    // 5) อัปเดต last_active เมื่อมี activity (throttle 5 วิ)
+    const throttle = (fn, ms) => { let t=0; return (...a)=>{ const n=now(); if (n-t>ms){t=n; fn(...a);} }; };
+    const touch = throttle(setActive, 5000);
+    ['mousemove','keydown','click','touchstart','scroll'].forEach(ev =>
+      window.addEventListener(ev, touch, { passive:true })
+    );
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) touch(); });
+
+    // 6) ตรวจซ้ำทุก 30 วิ
+    const timer = setInterval(() => { if (isExpired()) forceLogout(); }, 30000);
+    window.addEventListener('beforeunload', () => clearInterval(timer));
+
+    // 7) สำคัญ: อย่าเรียก forceLogout ใน SIGNED_OUT อีก (จะวน)
+    sb.auth.onAuthStateChange((event, s) => {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED' || !s) {
+        // ตอนนี้ "เขาถูก signed out แล้ว" → แค่ redirect พอ
+        redirectToLogin();
+      }
     });
+
+    // (ดีบั๊ก) แสดงอีเมล
+    sb.auth.getUser().then(({ data:{ user } }) =>
+      console.log('[Auth] Logged in email:', user?.email || '(not logged in)')
+    );
   });
 })();
 </script>
@@ -113,59 +182,55 @@
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
     </svg>
   </button>
-  
-<!-- Logout: fixed มุมขวาบน บังน้อยที่สุด -->
-<div id="logout-wrap"
-     class="absolute z-20
+
+  <!-- Logout: fixed มุมขวาบน บังน้อยที่สุด -->
+  <div id="logout-wrap" class="absolute z-20
             top-[calc(env(safe-area-inset-top)+1rem)] md:top-8
             left-4 md:left-auto md:right-28">
-  <button id="logout-btn"
-    class="group flex items-center gap-2 rounded-full border border-amber-200
+    <button id="logout-btn" class="group flex items-center gap-2 rounded-full border border-amber-200
            bg-white/90 backdrop-blur px-2.5 py-1.5 md:px-4 shadow-sm
            text-[#8B4513] hover:bg-[#A0522D] hover:text-white hover:shadow-md
-           transition"
-    aria-label="ออกจากระบบ">
-    <!-- ไอคอนออกจากระบบ -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-         class="h-5 w-5 transition-transform group-hover:-translate-x-0.5"
-         fill="none" stroke="currentColor" stroke-width="1.8">
-      <path stroke-linecap="round" stroke-linejoin="round"
-            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15"/>
-      <path stroke-linecap="round" stroke-linejoin="round"
-            d="M18 12H9m9 0l-3-3m3 3l-3 3"/>
-    </svg>
-    <!-- มือถือซ่อนข้อความ, เดสก์ท็อปค่อยโชว์ -->
-    <span class="hidden md:inline text-sm font-medium">ออกจากระบบ</span>
-  </button>
-</div>
-  
+           transition" aria-label="ออกจากระบบ">
+      <!-- ไอคอนออกจากระบบ -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+        class="h-5 w-5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor"
+        stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H9m9 0l-3-3m3 3l-3 3" />
+      </svg>
+      <!-- มือถือซ่อนข้อความ, เดสก์ท็อปค่อยโชว์ -->
+      <span class="hidden md:inline text-sm font-medium">ออกจากระบบ</span>
+    </button>
+  </div>
+
   <script type="module" src="./assets/app.js"></script>
   <script>
-  (function () {
-    const btn = document.getElementById('logout-btn');
-    if (!btn) return;
+(function () {
+  const btn = document.getElementById('logout-btn');
+  if (!btn) return;
 
-    // ถ้ายังไม่มี client จาก Hard Gate ให้สร้างแบบ fallback
-    const ensureClient = () => {
-      if (window.sb) return window.sb;
-      const SUPABASE_URL  = "https://lhfazmfaxruckfedwzlz.supabase.co";
-      const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoZmF6bWZheHJ1Y2tmZWR3emx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTgyODAsImV4cCI6MjA3MTk3NDI4MH0.T8lotVqI_nkB-glx3aSaeVAyJMF7Vout2SSeQGLzR78";
-      window.sb = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON);
-      return window.sb;
-    };
+  let quitting = false;
+  btn.addEventListener('click', async () => {
+    if (quitting) return;
+    quitting = true;
 
-    btn.addEventListener('click', async () => {
-      try {
-        const sb = ensureClient();
-        await sb?.auth?.signOut();
-      } finally {
-        location.href = './login.html';
-      }
-    });
-  })();
+    const sb = window.sb;
+    btn.disabled = true;
+    btn.classList.add('opacity-60','cursor-not-allowed');
+
+    try { await sb?.auth?.signOut(); } catch (e) { console.error(e); }
+    finally {
+      localStorage.removeItem('trip_login_at');
+      localStorage.removeItem('trip_last_active');
+      location.replace('./login.html');
+    }
+  });
+})();
 </script>
 
 
-</body>
-</html>
 
+</body>
+
+</html>
