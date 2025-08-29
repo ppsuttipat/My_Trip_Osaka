@@ -1,0 +1,102 @@
+body {
+      font-family: "Noto Sans Thai", "Noto Sans", "Noto Sans JP", sans-serif;
+      background-color: #fdfbf6;
+    }
+
+    .nav-button {
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #4a4a4a;
+    }
+
+    .nav-button:hover {
+      background-color: #d2691e;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-button.active {
+      background-color: #a0522d;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .day-panel {
+      display: none;
+    }
+
+    .day-panel.active {
+      display: block;
+    }
+
+    .info-card {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+        0 2px 4px -2px rgb(0 0 0 / 0.1);
+      padding: 1.5rem;
+      border-left: 5px solid #a0522d;
+      border-top: 1px solid #f0ead6;
+      border-right: 1px solid #f0ead6;
+      border-bottom: 1px solid #f0ead6;
+    }
+
+    .activity-card {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.05),
+        0 1px 2px -1px rgb(0 0 0 / 0.05);
+      padding: 1.25rem;
+      border: 1px solid #e0ded7;
+    }
+
+    @media (max-width: 767px) {
+
+      .responsive-table table,
+      .responsive-table thead,
+      .responsive-table tbody,
+      .responsive-table th,
+      .responsive-table td,
+      .responsive-table tr {
+        display: block;
+      }
+
+      .responsive-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      .responsive-table tr {
+        border: 1px solid #eee;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+
+      .responsive-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+      }
+
+      .responsive-table td:last-child {
+        border-bottom: 0;
+      }
+
+      .responsive-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-align: left;
+        color: #a0522d;
+      }
+    }
