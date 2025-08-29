@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ • แผนเที่ยวญี่ปุ่น</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans Thai', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Noto Sans Thai', sans-serif; background-color:#fdfbf6; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <main class="w-full max-w-md">
+    <div class="bg-white rounded-2xl shadow-xl border border-amber-100 p-8">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-[#8B4513]">เข้าสู่ระบบ</h1>
+        <p class="text-sm text-gray-500 mt-1">ล็อกอินเพื่อดูเว็บแพลนเที่ยว</p>
+      </div>
+
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">อีเมล</label>
+          <input id="email" type="email" required autocomplete="username"
+                 class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400" placeholder="name@example.com">
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน</label>
+          <input id="password" type="password" required autocomplete="current-password"
+                 class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400" placeholder="••••••••">
+        </div>
+
+        <button id="submit-btn" type="submit"
+                class="w-full mt-2 bg-[#A0522D] text-white font-semibold py-2.5 rounded-lg hover:bg-[#8B4513] transition disabled:opacity-60 disabled:cursor-not-allowed">
+          เข้าสู่ระบบ
+        </button>
+
+        <p id="error-box" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3"></p>
+        <p id="ok-box" class="hidden text-sm text-emerald-700 bg-emerald-50 border-emerald-200 border rounded-lg p-3"></p>
+      </form>
+
+      <p class="text-[12px] text-gray-500 mt-6 leading-relaxed">
+        * โปรดทราบ: เพราะโฮสต์บน GitHub Pages (เว็บสแตติก) ระบบล็อกอินนี้จะกันคนทั่วไปไม่ให้เห็นคอนเทนต์
+        แต่ไฟล์สแตติกยังเข้าถึงได้ถ้ารู้ลิงก์ตรง ๆ จึงเหมาะกับการใช้งานส่วนตัว/แชร์ให้คนรู้จักมากกว่าใช้งานเชิงลับ
+      </p>
+    </div>
+
+    <p class="text-center text-xs text-gray-500 mt-6">
+      © แผนเที่ยวของเรา
+    </p>
+  </main>
+
+  <!-- Supabase UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script type="module" src="./assets/login.js"></script>
+</body>
+</html>
