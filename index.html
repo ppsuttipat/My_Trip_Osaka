@@ -106,11 +106,6 @@
         redirectToLogin();
       }
     });
-
-    // (ดีบั๊ก) แสดงอีเมล
-    sb.auth.getUser().then(({ data:{ user } }) =>
-      console.log('[Auth] Logged in email:', user?.email || '(not logged in)')
-    );
   });
 })();
 </script>
