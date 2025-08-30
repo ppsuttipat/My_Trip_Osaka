@@ -16,13 +16,13 @@ export const tripDataTh = {
             date: "10 ต.ค.",
             city: "โอซาก้า",
             highlights: "Universal Studios Japan (USJ)",
-            weather: "🌥 14-24°C",
+            weather: "⛅️ 14-24°C",
         },
         {
             date: "11 ต.ค.",
             city: "โกเบ",
             highlights: "ศาลเจ้าอิกูตะ, เนื้อโกเบ, Kobe Port Tower",
-            weather: "🌥 14-23°C",
+            weather: "⛅️ 14-23°C",
         },
         {
             date: "12 ต.ค.",
@@ -1179,3 +1179,4 @@ export const tripDataTh = {
     },
 
 };
+
