@@ -13,103 +13,87 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="./assets/styles.css">
 
-
+  <!-- ซ่อนหน้าไว้ก่อนจนกว่าจะเช็คสิทธิ์เสร็จ -->
   <style>
     html[data-auth="pending"] body {
-      visibility: hidden
+      visibility: hidden;
     }
   </style>
-  <script>document.documentElement.dataset.auth = 'pending'</script>
+  <script>
+    // ตั้ง flag ว่ากำลังเช็ค auth
+    document.documentElement.dataset.auth = 'pending';
+  </script>
 
-  <!-- UMD เพียงตัวเดียว -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
-
-  <!-- Guard (สั้นๆ) -->
+  <!-- Guard แบบ localStorage: ต้อง login เป็น admin ก่อนถึงเข้าหน้านี้ได้ -->
   <script defer>
-      (function () {
-        const SB_URL = "https://lhfazmfaxruckfedwzlz.supabase.co";
-        const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoZmF6bWZheHJ1Y2tmZWR3emx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTgyODAsImV4cCI6MjA3MTk3NDI4MH0.T8lotVqI_nkB-glx3aSaeVAyJMF7Vout2SSeQGLzR78";
-        // const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 15 นาที
-        const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+    (function () {
+      const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // อายุ session 30 วัน
 
-  function ready(fn){ if (window.supabase?.createClient) fn(); else setTimeout(()=>ready(fn), 20); }
+      const ls = localStorage;
+      const now = () => Date.now();
+      const getNum = (k) => +(ls.getItem(k) || 0);
 
-  ready(async () => {
-    const sb = window.supabase.createClient(SB_URL, SB_ANON);
-    window.sb = sb;
+      const isLoggedIn = () => ls.getItem('trip_is_admin') === '1';
 
-    // ----- TTL helpers -----
-    const ls = localStorage;
-    const now = () => Date.now();
-    const getNum = (k) => +(ls.getItem(k) || 0);
-    const setActive = () => ls.setItem('trip_last_active', String(now()));
-    const isExpired = () => {
-      const loginAt    = getNum('trip_login_at');
-      const lastActive = Math.max(loginAt, getNum('trip_last_active'));
-      return !!loginAt && (lastActive + SESSION_TTL_MS <= now());
-    };
+      const isExpired = () => {
+        const loginAt = getNum('trip_login_at');
+        const lastActive = Math.max(loginAt, getNum('trip_last_active'));
+        return !!loginAt && (lastActive + SESSION_TTL_MS <= now());
+      };
 
-    // กันรีเอ็นทรี่ (ไม่ให้สั่ง logout/redirect ซ้ำ ๆ)
-    let redirecting = false;
-    const redirectToLogin = () => {
-      if (redirecting) return;
-      redirecting = true;
-      ls.removeItem('trip_login_at');
-      ls.removeItem('trip_last_active');
-      location.replace('./login.html');
-    };
-
-    // ใช้เมื่อเราต้อง “บังคับหลุด” เท่านั้น
-    const forceLogout = async () => {
-      if (redirecting) return;
-      redirecting = true;
-      try { await sb.auth.signOut(); } catch {}
-      finally {
+      let redirecting = false;
+      const redirectToLogin = () => {
+        if (redirecting) return;
+        redirecting = true;
+        ls.removeItem('trip_is_admin');
         ls.removeItem('trip_login_at');
         ls.removeItem('trip_last_active');
         location.replace('./login.html');
+      };
+
+      // 1) ถ้ายังไม่ login หรือ session หมดอายุ → เด้งไปหน้า login
+      if (!isLoggedIn() || isExpired()) {
+        return redirectToLogin();
       }
-    };
 
-    // 1) หมดอายุ → หลุดก่อนโชว์หน้า
-    if (isExpired()) return forceLogout();
-
-    // 2) ต้องมี session
-    const { data:{ session } } = await sb.auth.getSession();
-    if (!session) return redirectToLogin();
-
-    // 3) ตั้งค่าเริ่มถ้ายังไม่มี (เผื่อไม่ได้เซ็ตจาก login.js)
-    if (!getNum('trip_login_at')) {
-      const t = now();
-      ls.setItem('trip_login_at', String(t));
-      ls.setItem('trip_last_active', String(t));
-    }
-
-    // 4) โชว์หน้า
-    document.documentElement.removeAttribute('data-auth');
-
-    // 5) อัปเดต last_active เมื่อมี activity (throttle 5 วิ)
-    const throttle = (fn, ms) => { let t=0; return (...a)=>{ const n=now(); if (n-t>ms){t=n; fn(...a);} }; };
-    const touch = throttle(setActive, 5000);
-    ['mousemove','keydown','click','touchstart','scroll'].forEach(ev =>
-      window.addEventListener(ev, touch, { passive:true })
-    );
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) touch(); });
-
-    // 6) ตรวจซ้ำทุก 30 วิ
-    const timer = setInterval(() => { if (isExpired()) forceLogout(); }, 30000);
-    window.addEventListener('beforeunload', () => clearInterval(timer));
-
-    // 7) สำคัญ: อย่าเรียก forceLogout ใน SIGNED_OUT อีก (จะวน)
-    sb.auth.onAuthStateChange((event, s) => {
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED' || !s) {
-        // ตอนนี้ "เขาถูก signed out แล้ว" → แค่ redirect พอ
-        redirectToLogin();
+      // 2) ถ้ายังไม่มีเวลา login ให้เซ็ตเริ่มต้น
+      if (!getNum('trip_login_at')) {
+        const t = now();
+        ls.setItem('trip_login_at', String(t));
+        ls.setItem('trip_last_active', String(t));
       }
-    });
-  });
-})();
-</script>
+
+      // 3) ผ่านทุกเงื่อนไขแล้ว → โชว์หน้า
+      document.documentElement.removeAttribute('data-auth');
+
+      // 4) อัปเดต last_active เมื่อมี activity (throttle 5 วิ)
+      const setActive = () => ls.setItem('trip_last_active', String(now()));
+      const throttle = (fn, ms) => {
+        let t = 0;
+        return (...a) => {
+          const n = now();
+          if (n - t > ms) {
+            t = n;
+            fn(...a);
+          }
+        };
+      };
+      const touch = throttle(setActive, 5000);
+
+      ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(ev => {
+        window.addEventListener(ev, touch, { passive: true });
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) touch();
+      });
+
+      // 5) เช็คซ้ำทุก 30 วิ ถ้าเกิน TTL ค่อยเด้งไป login
+      const timer = setInterval(() => {
+        if (isExpired()) redirectToLogin();
+      }, 30000);
+      window.addEventListener('beforeunload', () => clearInterval(timer));
+    })();
+  </script>
 </head>
 
 <body class="text-gray-800">
@@ -202,30 +186,27 @@
 
   <script type="module" src="./assets/app.js"></script>
   <script>
-(function () {
-  const btn = document.getElementById('logout-btn');
-  if (!btn) return;
+    (function () {
+      const btn = document.getElementById('logout-btn');
+      if (!btn) return;
 
-  let quitting = false;
-  btn.addEventListener('click', async () => {
-    if (quitting) return;
-    quitting = true;
+      let quitting = false;
+      btn.addEventListener('click', () => {
+        if (quitting) return;
+        quitting = true;
 
-    const sb = window.sb;
-    btn.disabled = true;
-    btn.classList.add('opacity-60','cursor-not-allowed');
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
 
-    try { await sb?.auth?.signOut(); } catch (e) { console.error(e); }
-    finally {
-      localStorage.removeItem('trip_login_at');
-      localStorage.removeItem('trip_last_active');
-      location.replace('./login.html');
-    }
-  });
-})();
-</script>
+        // ลบสถานะ login แล้วเด้งกลับหน้า login
+        localStorage.removeItem('trip_is_admin');
+        localStorage.removeItem('trip_login_at');
+        localStorage.removeItem('trip_last_active');
 
-
+        location.replace('./login.html');
+      });
+    })();
+  </script>
 
 </body>
 
